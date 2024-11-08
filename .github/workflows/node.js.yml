@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,22 +12,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup Node.js
+    - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '14'
 
+    # install backend dependencies
     - name: Install dependencies (backend)
       run: |
         npm install
 
+    # Deploy backend to EC2
     - name: Deploy to EC2
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} 
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
         INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
         REGION: ${{ secrets.AWS_REGION }}
-        PATH_TO_KEY: ${{ secrets.PATH_TO_KEY }}
+        #PATH_TO_KEY: ${{ secrets.PATH_TO_KEY }}
       run: |
         # Install AWS CLI
         sudo apt-get install -y awscli
@@ -40,12 +41,12 @@ jobs:
         aws ec2 wait instance-running --instance-ids $INSTANCE_ID --region $REGION
 
         # Create a temporary SSH key file
-        echo "$PATH_TO_KEY" > /tmp/my-key.pem
+        echo "${{ secrets.PATH_TO_KEY}}" > /tmp/my-key.pem
         chmod 400 /tmp/my-key.pem
 
         # SSH into the EC2 instance, pull the latest backend code, and restart the server 
-        ssh -o StrictHostKeyChecking=no -i /tmp/my-key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-          cd /home/ubuntu/NodeStackStarterBackend &&
+        ssh -o StrictHostKeyChecking=no -i /tmp/my-key.pem ubuntu@13.60.243.115 << 'EOF'
+          cd /home/ubuntu/NodeStackStarterBackend1 &&
           git pull origin main &&
           sudo apt npm install &&
           pm2 restart server.js
