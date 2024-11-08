@@ -47,7 +47,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i /tmp/my-key.pem ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
           cd /home/ubuntu/NodeStackStarterBackend &&
           git pull origin main &&
-          npm install &&
+          sudo apt npm install &&
           pm2 restart server.js
         EOF
 
