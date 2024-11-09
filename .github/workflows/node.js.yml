@@ -29,7 +29,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
         INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
         REGION: ${{ secrets.AWS_REGION }}
-        #PATH_TO_KEY: ${{ secrets.PATH_TO_KEY }}
       run: |
         # Install AWS CLI
         sudo apt-get install -y awscli
