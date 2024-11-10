@@ -42,7 +42,7 @@ jobs:
         aws ec2 wait instance-running --instance-ids $INSTANCE_ID --region $REGION
 
         # Create a temporary SSH key file
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/my-key.pem
+        echo "${{ secrets.PATH_TO_KEY }}" > /tmp/my-key.pem
         chmod 400 /tmp/my-key.pem
 
         # SSH into the EC2 instance, pull the latest backend code, and restart the server
