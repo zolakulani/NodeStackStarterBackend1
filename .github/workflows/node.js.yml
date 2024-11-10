@@ -32,6 +32,7 @@ jobs:
         REGION: ${{ secrets.AWS_REGION }}
       run: |
         # Install AWS CLI
+        sudo apt-get update
         sudo apt-get install -y awscli
 
         # Start the EC2 instance (in case it's stopped)
