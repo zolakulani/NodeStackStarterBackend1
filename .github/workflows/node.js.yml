@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
       with:
         node-version: '14'
 
-    # install backend dependencies
+    # Install backend dependencies
     - name: Install dependencies (backend)
       run: |
         npm install
@@ -25,12 +26,13 @@ jobs:
     # Deploy backend to EC2
     - name: Deploy to EC2
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} 
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
         REGION: ${{ secrets.AWS_REGION }}
       run: |
         # Install AWS CLI
+        sudo apt-get update
         sudo apt-get install -y awscli
 
         # Start the EC2 instance (in case it's stopped)
@@ -40,14 +42,14 @@ jobs:
         aws ec2 wait instance-running --instance-ids $INSTANCE_ID --region $REGION
 
         # Create a temporary SSH key file
-        echo "${{ secrets.PATH_TO_KEY}}" > /tmp/my-key.pem
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/my-key.pem
         chmod 400 /tmp/my-key.pem
 
-        # SSH into the EC2 instance, pull the latest backend code, and restart the server 
+        # SSH into the EC2 instance, pull the latest backend code, and restart the server
         ssh -o StrictHostKeyChecking=no -i /tmp/my-key.pem ubuntu@18.191.93.104 << 'EOF'
           cd /home/ubuntu/NodeStackStarterBackend1 &&
           git pull origin main &&
-          sudo apt npm install &&
+          npm install &&
           pm2 restart server.js
         EOF
 
