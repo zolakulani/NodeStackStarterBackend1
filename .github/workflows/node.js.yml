@@ -45,7 +45,7 @@ jobs:
         chmod 400 /tmp/my-key.pem
 
         # SSH into the EC2 instance, pull the latest backend code, and restart the server
-        ssh -o StrictHostKeyChecking=no -i /tmp/my-key.pem ubuntu@18.191.93.104 << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i /tmp/my-key.pem ubuntu@98.82.4.124 << 'EOF'
           cd /home/ubuntu/NodeStackStarterBackend1 &&
           git pull origin main &&
           sudo apt install install &&
